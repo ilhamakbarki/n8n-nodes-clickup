@@ -1,6 +1,6 @@
-# n8n-nodes-360dialog
+# n8n-nodes-clickup
 
-This Custom Node for [360 Dialog](https://docs.360dialog.com/whatsapp-api/whatsapp-api/).
+This Custom Node for [Click Up](https://clickup.com/api).
 
 Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/).
 

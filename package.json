@@ -1,20 +1,20 @@
 {
-	"name": "@ilhamakbarki/n8n-nodes-360dialog",
+	"name": "@ilhamakbarki/n8n-nodes-clickup",
 	"version": "1.0.0",
-	"description": "360 Dialog node for N8N ",
+	"description": "ClickUp Custom node for N8N",
 	"keywords": [
 		"n8n-community-node-package",
-		"360Dialog"
+		"clickup"
 	],
 	"license": "MIT",
-	"homepage": "https://github.com/ilhamakbarki/n8n-nodes-360dialog#readme",
+	"homepage": "https://github.com/ilhamakbarki/n8n-nodes-clickup#readme",
 	"author": {
 		"name": "ilham akbar",
 		"email": "ilhamakbarki@gmail.com"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ilhamakbarki/n8n-nodes-360dialog.git"
+		"url": "git+https://github.com/ilhamakbarki/n8n-nodes-clickup.git"
 	},
 	"main": "index.js",
 	"scripts": {
@@ -32,7 +32,7 @@
 		"n8nNodesApiVersion": 1,
 		"credentials": [],
 		"nodes": [
-			"dist/nodes/Dialog360/Dialog360.node.js"
+			"dist/nodes/ClickUpCustom/ClickUpCustom.node.js"
 		]
 	},
 	"devDependencies": {
