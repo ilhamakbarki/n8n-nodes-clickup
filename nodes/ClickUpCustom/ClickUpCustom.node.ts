@@ -12,7 +12,7 @@ import {
 
 import { clickupApiRequest, validateJSON } from './GenericFunctions';
 
-import { taskCreateFields, taskOperations } from './TaskDescription';
+import { taskCreateFields, taskOperations, taskSetCustomFields } from './TaskDescription';
 
 import { ITask } from './TaskInterface';
 
@@ -83,6 +83,7 @@ export class ClickUpCustom implements INodeType {
 			// TASK
 			...taskOperations,
 			...taskCreateFields,
+			...taskSetCustomFields,
 		],
 	};
 
@@ -351,17 +352,24 @@ export class ClickUpCustom implements INodeType {
 						const body: ITask = {
 							name,
 						};
+						let isDateTime = false;
+						if (additionalFields.isDateTime) {
+							isDateTime = additionalFields.isDateTime as boolean;
+						}
 						const customFields: IDataObject[] = [];
 						if (additionalFields.customFieldsText && Object.keys(additionalFields.customFieldsText as IDataObject).length) {
 							const customFieldsText = additionalFields.customFieldsText as IDataObject;
 							for (const value of customFieldsText.values as IDataObject[]) {
-								customFields.push({
+								const dataToAdd: IDataObject = {
 									id: value['fieldId'],
 									value: value['fieldValue'],
-									value_options: {
+								};
+								if (isDateTime) {
+									dataToAdd["value_options"] = {
 										"time": true,
-									},
-								});
+									};
+								}
+								customFields.push(dataToAdd);
 							}
 						}
 						if (additionalFields.customFieldsOptions && Object.keys(additionalFields.customFieldsOptions as IDataObject).length) {
@@ -415,6 +423,62 @@ export class ClickUpCustom implements INodeType {
 							body.markdown_content = additionalFields.content as string;
 						}
 						responseData = await clickupApiRequest.call(this, 'POST', `/list/${listId}/task`, body);
+					}
+					if (operation === 'setCustomField') {
+						const taskId = this.getNodeParameter('task', i) as string;
+						const field = this.getNodeParameter('field', i) as IDataObject;
+						const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
+						let isDateTime = false;
+						if (additionalFields.isDateTime) {
+							isDateTime = additionalFields.isDateTime as boolean;
+						}
+						const customFields: IDataObject[] = [];
+						if (field.customFieldsText && Object.keys(field.customFieldsText as IDataObject).length) {
+							const customFieldsText = field.customFieldsText as IDataObject;
+							for (const value of customFieldsText.values as IDataObject[]) {
+								const dataToAdd: IDataObject = {
+									id: value['fieldId'],
+									value: value['fieldValue'],
+								};
+								if (isDateTime) {
+									dataToAdd["value_options"] = {
+										"time": true,
+									};
+								}
+								customFields.push(dataToAdd);
+							}
+						}
+						if (field.customFieldsOptions && Object.keys(field.customFieldsOptions as IDataObject).length) {
+							const customFieldsOptions = field.customFieldsOptions as IDataObject;
+							for (const value of customFieldsOptions.values as IDataObject[]) {
+								customFields.push({
+									id: value['fieldId'],
+									value: value['fieldValue'],
+								});
+							}
+						}
+						if (customFields.length < 1) {
+							throw new NodeOperationError(this.getNode(), 'Minimum 1 Custom Fields to Setting', {
+								itemIndex: i,
+							});
+						}
+						const responseDatas: IDataObject[] = [];
+						for (const d of customFields) {
+							const fieldId = d.id;
+							delete d.id;
+							const resp = await clickupApiRequest.call(
+								this,
+								'POST',
+								`/task/${taskId}/field/${fieldId}`,
+								d,
+							);
+							if (Array.isArray(resp)) {
+								responseDatas.push.apply(responseDatas, resp as IDataObject[]);
+							} else if (resp !== undefined) {
+								responseDatas.push(resp as IDataObject);
+							}
+						}
+						responseData = {"message":"OK", "responseData": responseDatas};
 					}
 				}
 

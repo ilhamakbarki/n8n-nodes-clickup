@@ -18,6 +18,12 @@ export const taskOperations: INodeProperties[] = [
 				description: 'Create a task',
 				action: 'Create a task',
 			},
+			{
+				name: 'Set Custom Field',
+				value: 'setCustomField',
+				description: 'Set a custom field',
+				action: 'Set a custom field on a task',
+			},
 		],
 		default: 'create',
 	},
@@ -112,7 +118,7 @@ export const taskCreateFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['task'],
-				operation: ['create'],
+				operation: ['create','setCustomField'],
 			},
 		},
 		typeOptions: {
@@ -130,7 +136,7 @@ export const taskCreateFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['task'],
-				operation: ['create'],
+				operation: ['create','setCustomField'],
 			},
 		},
 		typeOptions: {
@@ -254,6 +260,12 @@ export const taskCreateFields: INodeProperties[] = [
 			customFieldText,
 			customFieldOptions,
 			{
+				displayName: 'Use Date Time On Custom Fields',
+				name: 'isDateTime',
+				type: 'boolean',
+				default: false,
+			},
+			{
 				displayName: 'Content',
 				name: 'content',
 				type: 'string',
@@ -350,3 +362,81 @@ export const taskCreateFields: INodeProperties[] = [
 	},
 ];
 
+export const taskSetCustomFields: INodeProperties[] = [
+	/* -------------------------------------------------------------------------- */
+	/*                                task:setCustomField                         */
+	/* -------------------------------------------------------------------------- */
+	{
+		displayName: 'List Name or ID',
+		name: 'list',
+		type: 'options',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['task'],
+				operation: ['setCustomField'],
+			},
+		},
+		typeOptions: {
+			loadOptionsMethod: 'getFolderlessLists',
+			loadOptionsDependsOn: ['space'],
+		},
+		required: true,
+	},
+	{
+		displayName: 'Task ID',
+		name: 'task',
+		type: 'string',
+		default: '',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['task'],
+				operation: ['setCustomField'],
+			},
+		},
+		description: 'The ID of the task to add custom field to',
+	},
+	{
+		displayName: 'Custom Fields',
+		name: 'field',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['task'],
+				operation: ['setCustomField'],
+			},
+		},
+		description: 'Add custom field',
+		options:[
+			customFieldText,
+			customFieldOptions,
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['task'],
+				operation: ['setCustomField'],
+			},
+		},
+		options:[
+			{
+				displayName: 'Use Date Time On Custom Fields',
+				name: 'isDateTime',
+				type: 'boolean',
+				default: false,
+			},
+		],
+	},
+];

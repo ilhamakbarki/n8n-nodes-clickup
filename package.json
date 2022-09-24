@@ -1,6 +1,6 @@
 {
 	"name": "@ilhamakbarki/n8n-nodes-clickup",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "ClickUp Custom node for N8N",
 	"keywords": [
 		"n8n-community-node-package",
